@@ -1,11 +1,13 @@
 function startup(aData, aReason) {
-	Components.utils.import('chrome://cdumpjsm/content/cDump.jsm');
+/* 	Components.utils.import('chrome://cdumpjsm/content/cDump.jsm');
+	Components.utils.import('resource://gre/modules/Services.jsm');
 	var bData = [1,2,['a','b',true,true],4,{str1:'a string',arr1:[false,false,false,false]},6, null, undefined, new RegExp('rawr','g')];
 	//var bData = Services.wm.getMostRecentWindow(null);
-	cDump(bData,{
+	var cWin = Services.wm.getMostRecentWindow(null);
+	cDump(cWin,{
 		t:'d2 - aData startup',
-		depth: 2,
-	});
+		depth: 1
+	}); */
 }
 
 function shutdown(aData, aReason) {

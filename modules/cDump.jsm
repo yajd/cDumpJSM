@@ -36,44 +36,64 @@ function cDump(obj, opts) {
 		var div = ['div', {}, dig(obj, 0)];
 		var referenceNodes = {};
 		var createdDiv = jsonToDOM(div , cWin.document, referenceNodes);
-		//start make htmldatauri
-		var dummyDiv = cWin.document.createElementNS(jsonToDOM.defaultNamespace, 'div');
-		dummyDiv.appendChild(createdDiv);
-		var head = '';
-		var body = '';
-		body += dummyDiv.innerHTML; // i have to set the location to it, otherwise the findbar doesnt work, its so weird
-		Cu.reportError('toSource = ' + dummyDiv.toSource());
-		if (opts.t) {
-			head += '<title>' + opts.t + '</title>';
+		if (opts.appendChild) {
+			doc.documentElement.appendChild(
+				createdDiv // cannot appendChild, also on restart, it doesnt persist, i have to set the location to it, otherwise the findbar doesnt work, its so weird
+			);
+		} else {
+			//start make htmldatauri
+			var dummyDiv = cWin.document.createElementNS(jsonToDOM.defaultNamespace, 'div');
+			dummyDiv.appendChild(createdDiv);
+			var head = '';
+			var body = '';
+			body += dummyDiv.innerHTML; // i have to set the location to it, otherwise the findbar doesnt work, its so weird
+			Cu.reportError('toSource = ' + dummyDiv.toSource());
+			if (opts.t) {
+				head += '<title>' + opts.t + '</title>';
+			}
+			head += ' <meta charset="UTF-8">';
+			var htmlDataUri = 'data:text/html,' + encodeURIComponent('<head>' + head + '</head>' + '<body>' + body + '</body>');
+			//end make htmldatauri
+			doc.location = htmlDataUri;
 		}
-		head += ' <meta charset="UTF-8">';
-		var htmlDataUri = 'data:text/html,' + encodeURIComponent('<head>' + head + '</head>' + '<body>' + body + '</body>');
-		//end make htmldatauri
-		doc.location = htmlDataUri;
-		//doc.documentElement.appendChild(
-		//	createdDiv // cannot appendChild, also on restart, it doesnt persist, i have to set the location to it, otherwise the findbar doesnt work, its so weird
-		//);
     };
 	
 	var dig = function(targ, cDepth) {
 		var json;
 
 
-			var cTypes = cTypeof(targ, ['objS','funcS','nodeS','obj','func']); //obj and func are just for debug purposes, in case something strange comes up
-			var scType = cTypes.nodeS ? cTypes.nodeS : cTypes.objS; //single type to define it
+			var cTypes = cTypeof(targ, ['typeof', 'objS','funcS','nodeS','obj','func']); //obj and func are just for debug purposes, in case something strange comes up
+			var scType = cTypes.typeof; //cTypes.nodeS ? cTypes.nodeS : cTypes.objS; //single type to define it
+			Cu.reportError('scType init = ' + scType);			
+			scType = scType[0].toUpperCase() + scType.substr(1); //proper case uppers the first one non regex solution
+			Cu.reportError('scType proper cased = ' + scType);
 			if (scType == 'Object') {
-				var specificType = cTypes.funcS;
+				if (cTypes.nodeS) {
+					scType = cTypes.nodeS;
+				} else if (['Null', 'Array'].indexOf(cTypes.objS) > -1) {
+					scType = cTypes.objS;
+				}
+			}
+			var tTitle = cTypes.typeof + ' - ' + cTypes.objS + ' - ' + cTypes.funcS;
+			try {
+				tTitle += '(Value: ' + targ + ')';
+			} catch (ex) {
+				tTitle += '(Value: ' + ex + ')';
 			}
 			json =
 			['table', {}, 
 				['tr', {}, //start header 1
 					['th', {}, 
-						targ + ' |||| ' + cTypes.objS + ' |||| ' + cTypes.funcS
+						tTitle
 					]
 				] //end header 1
 			];
-			Cu.reportError('targ = "' + targ + '"');
-			Cu.reportError('scType = "' + scType + '"');
+			try {
+				Cu.reportError('targ = "' + targ + '"');
+			} catch (ex) {
+				Cu.reportError('targ = "' + ex + '"');
+			}
+			Cu.reportError('scType.typeof = "' + scType.typeof + '"');
 			Cu.reportError('cTypes.obj = "' + cTypes.obj + '"');
 			Cu.reportError('cTypes.func = "' + cTypes.func + '"');
 			switch (scType) {
@@ -152,7 +172,7 @@ function cDump(obj, opts) {
 							dug = ex;
 						}
 						*/
-						Cu.reportError('init - ' + p);
+						//Cu.reportError('init - ' + p);
 						var dug;
 						try {
 							dug = targ[p];
@@ -182,8 +202,8 @@ function cDump(obj, opts) {
 								]
 							]	//key value pair
 						);
-						Cu.reportError('pushed - ' + p);
-						Cu.reportError('its dug = ' + dug);
+						//Cu.reportError('pushed - ' + p);
+						//Cu.reportError('its dug = ' + dug);
 						
 						if (keys && keys.length && cDepth == opts.depth) {
 							json[json.length-1][3].push(
@@ -297,12 +317,16 @@ function jsonToDOM(xml, doc, nodes) {
 			//Cu.reportError('e == ' + e);
 			//Cu.reportError('typeof == ' + cTypeof(e));
 			//Cu.reportError('e instanceof doc.defaultView.Node == ' + (e instanceof doc.defaultView.Node));
-            elem.appendChild(cTypeof(e, ['obj']).obj == '[object Array]' ?
-								tag.apply(null, e) :
-								e instanceof doc.defaultView.Node ? //note: for this line to work when dumping xpcom stuff, must pass in cWin.document as 2nd arg of jsonToDOM
-								e :
-								doc.createTextNode(e)
-							);
+			try {
+				elem.appendChild(cTypeof(e, ['obj']).obj == 'Array' ?
+									tag.apply(null, e) :
+									e instanceof doc.defaultView.Node ? //note: for this line to work when dumping xpcom stuff, must pass in cWin.document as 2nd arg of jsonToDOM
+									e :
+									doc.createTextNode(e)
+								);
+			} catch (ex) {
+				elem.appendChild(doc.createTextNode(ex));
+			}
         });
         return elem;
     }
@@ -318,7 +342,7 @@ jsonToDOM.defaultNamespace = jsonToDOM.namespaces.html;
 function cTypeof(o, returnMethod) {
 	//returnMethod is array of methods you want returned
 	if (!returnMethod || (returnMethod.length !== undefined && returnMethod.length == 0)) {
-		returnMethod = ['obj', 'objS', 'func', 'funcS', 'nodeS'];
+		returnMethod = ['typeof', 'obj', 'objS', 'func', 'funcS', 'nodeS'];
 	}
 	var method = {};
 	var methodRetVals = {};
@@ -353,7 +377,7 @@ function cTypeof(o, returnMethod) {
 		}
 		return methodRetVals.objS;
 	}
-	method.funcS = function () { //obj string
+	method.funcS = function () { //func string
 		if (!('func' in methodRetVals)) {
 			method.func();
 		}
@@ -383,7 +407,7 @@ function cTypeof(o, returnMethod) {
 		return nodeName;
 	}
     */
-	method.nodeS = function () { //obj string
+	method.nodeS = function () { //node string
         try {
             var nodeType = o.nodeType;
             if (nodeType !== undefined && nodeType !== null) {
@@ -396,16 +420,33 @@ function cTypeof(o, returnMethod) {
         }
 		return nodeType;
 	}
+    method.typeof = function() {
+        try {
+           methodRetVals.typeof = typeof o; 
+        } catch (ex) {
+           methodRetVals.typeof = ex;
+        }
+        return methodRetVals.typeof;
+    }
     var retVal = {};
-    //var retStr = [];
     [].forEach.call(returnMethod, function(m) {
         if (m in method) {
-          retVal[m] = method[m](); //so must return values in funcs above 
+          //retVal[m] = method[m](); //so must return values in funcs above 
+		  retVal[m] = method['typeof'](); //so must return values in funcs above 
+		  if (retVal[m] == 'object') {
+			if (o instanceof Array) {
+				retVal[m] = 'Array';
+			} else if (o === null) {
+				retVal[m] = 'Null';
+			} else {
+				retVal[m] = 'Object';
+			}
+		  } else {
+			retVal[m] = retVal[m][0].toUpperCase() + retVal[m].substr(1);
+		  }
         } else {
             retVal[m] = 'METHOD_UNDEFINED';
         }
-        //retStr.push(retVal[m]);
     });
-    //alert(retStr.join('\n*'));
 	return retVal;
 }

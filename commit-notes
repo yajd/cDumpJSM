@@ -1,0 +1,5 @@
+*cDump.jsm
+-updated cTypeof func to have typeof, typeof works for all but if it returns object then i need to resort to others
+-testing exceptions of cTypeof by looking at typeof == object
+-not able to cDump window its cuasing some issues trying to debug that so doing some tweaks here and there, debug version of cTypes
+-not in working order, in debug mode
