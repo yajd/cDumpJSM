@@ -85,7 +85,7 @@ function cDump(obj, opts) {
 				] //end header 1
 			];
 			try {
-				Cu.reportError('targ = "' + targ + '"');
+				//Cu.reportError('targ = "' + targ + '"');
 			} catch (ex) {
 				Cu.reportError('targ = "' + ex + '"');
 			}
@@ -115,7 +115,7 @@ function cDump(obj, opts) {
 						try {
 							var keys = undefined;
 							keys = Object.keys(targ[i]); //note: ES5 feature //dont use Object.keys(dug) here because if dug is an ex it will explore that
-							Cu.reportError('XPCWrappedNative_NoHelper || Object --> targ[i] ("' + targ[i] + '") has keys!: type.obj = ' + cTypeof(keys,['obj']).obj + ' length = ' + keys.length + ' val = ' + keys);
+							//Cu.reportError('XPCWrappedNative_NoHelper || Object --> targ[i] ("' + targ[i] + '") has keys!: type.obj = ' + cTypeof(keys,['obj']).obj + ' length = ' + keys.length + ' val = ' + keys);
 						} catch (ex) {
 							Cu.reportError('XPCWrappedNative_NoHelper || Object --> ex when keys of targ[i] ("' + targ + '[' + i + ']"): ' + ex);
 						}
@@ -178,7 +178,7 @@ function cDump(obj, opts) {
 						try {
 							var keys = undefined;
 							keys = Object.keys(targ[p]); //note: ES5 feature //dont use Object.keys(dug) here because if dug is an ex it will explore that
-							Cu.reportError('XPCWrappedNative_NoHelper || Object --> targ[p] ("' + targ[p] + '") has keys!: type.obj = ' + cTypeof(keys,['obj']).obj + ' length = ' + keys.length + ' val = ' + keys);
+							//Cu.reportError('XPCWrappedNative_NoHelper || Object --> targ[p] ("' + targ[p] + '") has keys!: type.obj = ' + cTypeof(keys,['obj']).obj + ' length = ' + keys.length + ' val = ' + keys);
 						} catch (ex) {
 							Cu.reportError('XPCWrappedNative_NoHelper || Object --> ex when keys of targ[p] ("' + targ + '[' + p + ']"): ' + ex);
 						}
@@ -221,7 +221,7 @@ function cDump(obj, opts) {
 					try {
 						var keys = undefined;
 						keys = Object.keys(targ); //note: ES5 feature //dont use Object.keys(dug) here because if dug is an ex it will explore that
-						Cu.reportError('default: targ ("' + targ + '") has keys!: type.obj = ' + cTypeof(keys,['obj']).obj + ' length = ' + keys.length + ' val = ' + keys);
+						//Cu.reportError('default: targ ("' + targ + '") has keys!: type.obj = ' + cTypeof(keys,['obj']).obj + ' length = ' + keys.length + ' val = ' + keys);
 					} catch (ex) {
 						Cu.reportError('default: ex when keys of targ ("' + targ + '"): ' + ex);
 					}
