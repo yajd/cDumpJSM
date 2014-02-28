@@ -11,7 +11,8 @@ function cDump(obj, opts) {
 	depth - number (default 1);
     /////////////////
     */
-    
+    Cu.reportErro('done');
+    return;
     if (!opts) { opts = {}; }
 	if (!('depth' in opts)) { opts.depth = 1 };
 	if (!('inbg' in opts)) { opts.inbg = false };
