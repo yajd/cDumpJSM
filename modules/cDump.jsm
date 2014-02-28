@@ -11,9 +11,7 @@ function cDump(obj, opts) {
 	depth - number (default 1);
     /////////////////
     */
-    Cu.reportErro('done');
-    return;
-    if (!opts) { opts = {}; }
+    if (!opts) { Cu.reportError('no opts so yua'); opts = {}; }
 	if (!('depth' in opts)) { opts.depth = 1 };
 	if (!('inbg' in opts)) { opts.inbg = false };
     if (!('objStr' in opts)) { opts.objStr = 'NAME_STRING_UNDEFINED' }
