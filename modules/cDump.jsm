@@ -14,9 +14,8 @@ function cDump(obj, opts) {
     if (!opts) { opts = {}; }
 	if (!('depth' in opts)) { opts.depth = 1 };
 	if (!('inbg' in opts)) { opts.inbg = false };
-    if (!('objStr' in opts)) { opts.objStr = 'NAME_STRING_UNDEFINED' }
-	console.log(opts);
-    var cWin = Services.wm.getMostRecentWindow('navigator:browser');
+	if (!('objStr' in opts)) { opts.objStr = 'NAME_STRING_UNDEFINED' }
+	var cWin = Services.wm.getMostRecentWindow('navigator:browser');
 	Cu.reportError('cWin == ' + cWin);
 	if (!cWin) {
 		Cu.reportError('no recent browser with tabs found. cannot cDump. aborted.');
