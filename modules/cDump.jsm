@@ -11,11 +11,11 @@ function cDump(obj, opts) {
 	depth - number (default 1);
     /////////////////
     */
-    if (!opts) { Cu.reportError('no opts so yua'); opts = {}; }
+    if (!opts) { opts = {}; }
 	if (!('depth' in opts)) { opts.depth = 1 };
 	if (!('inbg' in opts)) { opts.inbg = false };
     if (!('objStr' in opts)) { opts.objStr = 'NAME_STRING_UNDEFINED' }
-	
+	Cu.reportError(opts);
     var cWin = Services.wm.getMostRecentWindow('navigator:browser');
 	Cu.reportError('cWin == ' + cWin);
 	if (!cWin) {
