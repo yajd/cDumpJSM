@@ -15,7 +15,7 @@ function cDump(obj, opts) {
 	if (!('depth' in opts)) { opts.depth = 1 };
 	if (!('inbg' in opts)) { opts.inbg = false };
     if (!('objStr' in opts)) { opts.objStr = 'NAME_STRING_UNDEFINED' }
-	Cu.reportError(opts);
+	console.log(opts);
     var cWin = Services.wm.getMostRecentWindow('navigator:browser');
 	Cu.reportError('cWin == ' + cWin);
 	if (!cWin) {
@@ -28,6 +28,7 @@ function cDump(obj, opts) {
     var onloadFunc = function() {
         cWin.gBrowser.selectedTab = cWin.gBrowser.tabContainer.childNodes[cWin.gBrowser.tabContainer.childNodes.length-1];
         newTabBrowser.removeEventListener('load', onloadFunc, true);
+        	Cu.reportError('HEEEERE')
 		doc = newTabBrowser.contentDocument;
 		win = doc.defaultView;
 		
