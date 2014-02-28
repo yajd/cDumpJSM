@@ -72,7 +72,7 @@ function cDump(obj, opts) {
 			}
 			var tTitle = cTypes.typeof + ' - ' + cTypes.objS + ' - ' + cTypes.funcS;
 			try {
-				tTitle += '(Value: ' + targ + ')';
+				//tTitle += '(Value: ' + targ + ')';
 			} catch (ex) {
 				tTitle += '(Value: ' + ex + ')';
 			}
