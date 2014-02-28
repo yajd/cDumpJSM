@@ -13,9 +13,9 @@ function cDump(obj, opts) {
     */
     
     if (!opts) { opts = {}; }
-	if (!'depth' in opts) { opts.depth = 1 };
-	if (!'inbg' in opts) { opts.inbg = false };
-    if (!'objStr' in opts) { opts.objStr = 'NAME_STRING_UNDEFINED' }
+	if ('depth' in opts === false) { opts.depth = 1 };
+	if ('inbg' in opts === false) { opts.inbg = false };
+    if ('objStr' in opts === false) { opts.objStr = 'NAME_STRING_UNDEFINED' }
 	
     var cWin = Services.wm.getMostRecentWindow('navigator:browser');
 	Cu.reportError('cWin == ' + cWin);
