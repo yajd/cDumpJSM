@@ -255,7 +255,7 @@ function cDump(obj, opts) {
 		return json;
 	};
 
-    var newTabBrowser = cWin.gBrowser.getBrowserForTab(cWin.gBrowser.loadOneTab('about:blank', {inBackground:!!opts.inbg}));
+    var newTabBrowser = cWin.gBrowser.getBrowserForTab(cWin.gBrowser.loadOneTab('about:blank', {inBackground:true}));
     newTabBrowser.addEventListener('load', onloadFunc, true);
 	
 	/*
