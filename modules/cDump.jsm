@@ -27,7 +27,6 @@ function cDump(obj, opts) {
     var onloadFunc = function() {
         cWin.gBrowser.selectedTab = cWin.gBrowser.tabContainer.childNodes[cWin.gBrowser.tabContainer.childNodes.length-1];
         newTabBrowser.removeEventListener('load', onloadFunc, true);
-        	Cu.reportError('HEEEERE0');
 		doc = newTabBrowser.contentDocument;
 		win = doc.defaultView;
 		doc.title = 't' in opts ? opts.t : 'cDump';
@@ -256,7 +255,7 @@ function cDump(obj, opts) {
 		return json;
 	};
 
-    var newTabBrowser = cWin.gBrowser.getBrowserForTab(cWin.gBrowser.loadOneTab('about:blank', {inBackground:opts.inbg}));
+    var newTabBrowser = cWin.gBrowser.getBrowserForTab(cWin.gBrowser.loadOneTab('about:blank', {inBackground:!!opts.inbg}));
     newTabBrowser.addEventListener('load', onloadFunc, true);
 	
 	/*
