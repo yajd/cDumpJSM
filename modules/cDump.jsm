@@ -25,11 +25,10 @@ function cDump(obj, opts) {
 	var doc;
 	var win;
     var onloadFunc = function() {
-        cWin.gBrowser.selectedTab = cWin.gBrowser.tabContainer.childNodes[cWin.gBrowser.tabContainer.childNodes.length-1];
         newTabBrowser.removeEventListener('load', onloadFunc, true);
 		doc = newTabBrowser.contentDocument;
 		win = doc.defaultView;
-		doc.title = 't' in opts ? opts.t : 'cDump';
+		doc.title = opts.t ? opts.t : 'cDump';
 		var div = ['div', {}, dig(obj, 0)];
 		var referenceNodes = {};
 		var createdDiv = jsonToDOM(div , cWin.document, referenceNodes);
@@ -255,7 +254,7 @@ function cDump(obj, opts) {
 		return json;
 	};
 
-    var newTabBrowser = cWin.gBrowser.getBrowserForTab(cWin.gBrowser.loadOneTab('about:blank', {inBackground:true}));
+    var newTabBrowser = cWin.gBrowser.getBrowserForTab(cWin.gBrowser.loadOneTab('about:blank', {inBackground:opts.inbg}));
     newTabBrowser.addEventListener('load', onloadFunc, true);
 	
 	/*
